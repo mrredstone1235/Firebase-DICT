@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "503343630355",
+    "project_id": "fir-81dba",
+    "storage_bucket": "fir-81dba.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:503343630355:android:3eae21c1ca52f347ad57e6",
+        "android_client_info": {
+          "package_name": "com.plater.sample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "503343630355-0r6m8077rrmai249m5l8pi23bgf2r7i9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqd9RYU2Mqy6DksEtZ18g2WvRfWc5vrP4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "503343630355-0r6m8077rrmai249m5l8pi23bgf2r7i9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
