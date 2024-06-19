@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_integration/main.dart';
 import 'package:flutter/material.dart';
 
 class SecondPage extends StatelessWidget {
@@ -7,17 +8,17 @@ class SecondPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   title: Text('Second Screen'),
-      //   // Add a leading button to the AppBar
-      //   leading: IconButton(
-      //     icon: Icon(Icons.arrow_back),
-      //     onPressed: () {
-      //       // Navigate back to the previous screen
-      //       Navigator.pop(context);
-      //     },
-      //   ),
-      // ),
+      appBar: AppBar(
+        title: Text('Second Screen'),
+        // Add a leading button to the AppBar
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            // Navigate back to the previous screen
+            Navigator.pop(context);
+          },
+        ),
+      ),
       body: Center(
         child: FutureBuilder(
           future: FirebaseAuth.instance.authStateChanges().first,
@@ -40,9 +41,13 @@ class SecondPage extends StatelessWidget {
                       user.email ?? 'No Email',
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
-                    ElevatedButton(onPressed: (){
+                    ElevatedButton(onPressed: () async {
+                      final UserCredential? userCredential =
+                      await signInWithGoogle();
                       signOut();
-                      Navigator.pop(context);
+                      
+                      if (userCredential == null) {Navigator.pop(context);}
+                     
                     }, child: Text("Log out"))
                   ],
                 );

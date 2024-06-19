@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_integration/firebase_options.dart';
+import 'package:firebase_integration/screens/crud_page.dart';
 import 'package:firebase_integration/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,8 +9,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-  options: DefaultFirebaseOptions.currentPlatform,
-);
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
@@ -27,7 +28,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 64, 1, 172)),
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromARGB(255, 64, 1, 172)),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo sa DICT'),
@@ -47,7 +49,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
@@ -56,25 +57,44 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Center(
         child: Column(
           children: [
-            ElevatedButton(onPressed: () async {
-              final UserCredential? userCredential = await signInWithGoogle();
-                    if (userCredential != null) {
-                      // Signed in
-                      print('User: ${userCredential.user!.displayName}');
-                      print('Sign in Successful');
-                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text('Logged in as: ${userCredential.user!.displayName}'),
-                        
-                      ));
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => const SecondPage()),
-                      );
-                    } else {
-                      // Sign in failed
-                      print('Sign in failed');
-                    }
-            }, child: const Text("Firebase")),
+            ElevatedButton(
+                onPressed: () async {
+                  final UserCredential? userCredential =
+                      await signInWithGoogle();
+                  if (userCredential != null) {
+                    // Signed in
+                    // print('User: ${userCredential.user!.displayName}');
+                    // print('Sign in Successful');
+                    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    //   content: Text('Logged in as: ${userCredential.user!.displayName}'),
+                    // ));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const SecondPage()),
+                    );
+                  } else {
+                    // Sign in failed
+                    print('Sign in failed');
+                  }
+                },
+                child: const Text("Firebase")),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SecondPage()),
+                  );
+                },
+                child: Text("secondpage")),
+                ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CrudPage()),
+                  );
+                },
+                child: Text("Crud"))
           ],
         ),
       ),
@@ -88,7 +108,8 @@ Future<UserCredential?> signInWithGoogle() async {
     final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
 
     // Obtain the authentication details for the signed-in user.
-    final GoogleSignInAuthentication googleAuth = await googleUser!.authentication;
+    final GoogleSignInAuthentication googleAuth =
+        await googleUser!.authentication;
 
     // Create a new credential.
     final AuthCredential credential = GoogleAuthProvider.credential(
