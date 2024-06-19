@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_integration/firebase_options.dart';
+import 'package:firebase_integration/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -26,7 +27,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 64, 1, 172)),
         useMaterial3: true,
       ),
       home: const MyHomePage(title: 'Flutter Demo sa DICT'),
@@ -53,20 +54,29 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-        child: ElevatedButton(onPressed: () async {
-          final UserCredential? userCredential = await signInWithGoogle();
-                if (userCredential != null) {
-                  // Signed in
-                  print('User: ${userCredential.user!.displayName}');
-                  print('Sign in Successful');
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('Logged in as: ${userCredential.user!.displayName}'),
-                  ));
-                } else {
-                  // Sign in failed
-                  print('Sign in failed');
-                }
-        }, child: const Text("Firebase")),
+        child: Column(
+          children: [
+            ElevatedButton(onPressed: () async {
+              final UserCredential? userCredential = await signInWithGoogle();
+                    if (userCredential != null) {
+                      // Signed in
+                      print('User: ${userCredential.user!.displayName}');
+                      print('Sign in Successful');
+                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                        content: Text('Logged in as: ${userCredential.user!.displayName}'),
+                        
+                      ));
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const SecondPage()),
+                      );
+                    } else {
+                      // Sign in failed
+                      print('Sign in failed');
+                    }
+            }, child: const Text("Firebase")),
+          ],
+        ),
       ),
     );
   }
