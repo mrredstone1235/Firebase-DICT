@@ -2,10 +2,38 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_integration/main.dart';
 import 'package:flutter/material.dart';
 
-class SecondPage extends StatelessWidget {
+class SecondPage extends StatefulWidget {
   const SecondPage({super.key});
 
+  
+
   @override
+  State<SecondPage> createState() => _SecondPageState();
+}
+
+class _SecondPageState extends State<SecondPage> {
+  @override
+
+  bool _loggingOut = false;
+
+    void _logout() async {
+    setState(() {
+      _loggingOut = true;
+    });
+
+    try {
+      await FirebaseAuth.instance.signOut();
+      // Navigate to the login screen or another appropriate screen after logout
+      Navigator.pop(context); // Example: Navigate back to previous screen
+    } catch (e) {
+      print('Error logging out: $e');
+      // Handle error (show snackbar, display error message, etc.)
+    } finally {
+      setState(() {
+        _loggingOut = false;
+      });
+    }
+  }
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -41,14 +69,17 @@ class SecondPage extends StatelessWidget {
                       user.email ?? 'No Email',
                       style: TextStyle(fontSize: 16, color: Colors.grey),
                     ),
-                    ElevatedButton(onPressed: () async {
-                      final UserCredential? userCredential =
-                      await signInWithGoogle();
-                      signOut();
-                      
-                      if (userCredential == null) {Navigator.pop(context);}
-                     
-                    }, child: Text("Log out"))
+                    ElevatedButton(onPressed: _loggingOut ? null : _logout,
+                     child: _loggingOut
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                strokeWidth: 3,
+                              ),
+                            )
+                          : const Text("Log out"),)
                   ],
                 );
               } else {
@@ -60,8 +91,4 @@ class SecondPage extends StatelessWidget {
       ),
     );
   }
-}
-
-Future<void> signOut() async {
-  await FirebaseAuth.instance.signOut();
 }

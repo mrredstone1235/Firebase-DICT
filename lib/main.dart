@@ -79,14 +79,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   }
                 },
                 child: const Text("Firebase")),
-            ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SecondPage()),
-                  );
-                },
-                child: Text("secondpage")),
+                const SizedBox(height: 10,),
                 ElevatedButton(
                 onPressed: () {
                   Navigator.push(
