@@ -87,7 +87,17 @@ class _MyHomePageState extends State<MyHomePage> {
                     MaterialPageRoute(builder: (context) => const CrudPage()),
                   );
                 },
-                child: Text("Crud"))
+                child: Text("Crud")),
+                ElevatedButton(
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('This is a Snackbar'),
+                    duration: Duration(seconds: 2), // Adjust as needed
+                  ),
+                );
+                },
+                child: Text("Button print"))
           ],
         ),
       ),
