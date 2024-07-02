@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_integration/firebase_options.dart';
 import 'package:firebase_integration/screens/crud_page.dart';
 import 'package:firebase_integration/screens/profile_page.dart';
+import 'package:firebase_integration/screens/simple_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -26,13 +27,14 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color.fromARGB(255, 64, 1, 172)),
+        colorScheme:
+            ColorScheme.fromSeed(seedColor: Color.fromARGB(255, 26, 66, 40)),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo sa DICT'),
+      home: const MyHomePage(title: 'Flutter Demo'),
     );
   }
 }
@@ -51,6 +53,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text(widget.title),
       ),
@@ -78,27 +81,47 @@ class _MyHomePageState extends State<MyHomePage> {
                     print('Sign in failed');
                   }
                 },
-                child: const Text("Firebase")),
-                const SizedBox(height: 10,),
-                ElevatedButton(
+                child: const Text("Sign in with Google")),
+            const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const CrudPage()),
                   );
                 },
-                child: Text("Crud")),
-                ElevatedButton(
+                child: Text("CRUD button")),
+                const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
                 onPressed: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('This is a Snackbar'),
-                    duration: Duration(seconds: 2), // Adjust as needed
-                  ),
-                );
+                    const SnackBar(
+                      content: Text('This is a Snackbar'),
+                      duration: Duration(seconds: 2), // Adjust as needed
+                    ),
+                  );
                 },
-                child: Text("Button print"))
+                child: const Text("Sample snackbar")),
+                const SizedBox(
+              height: 20,
+            ),
+            ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SimpleUi()),
+                  );
+                },
+                child: const Text("Go to Sample UI")),
+                const SizedBox(height: 5,),
+                Container(width: 20 ,height: 20,
+                color: Colors.green,)
           ],
+          
         ),
       ),
     );

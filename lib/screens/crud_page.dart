@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_integration/screens/create_screen_page.dart';
 
 class CrudPage extends StatefulWidget {
   const CrudPage({super.key});
@@ -62,18 +63,38 @@ class _CrudPageState extends State<CrudPage> {
     });
   }
 
+  void navigateToEditUserPage(Users user) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(builder: (context) => EditUserPage(user: user)),
+  ).then((_) {
+    // Refresh data after returning from Edit User page
+    getData();
+  });
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Firebase User List'),
+        // title: Text('Firebase User List'),
+title: const Text('Firebase User List'),
+  actions: [
+    Padding(padding: EdgeInsets.only(right: 20),child: IconButton(
+      icon: const Icon(Icons.add),
+      onPressed: () {
+        navigateToCreateUserPage();
+      },
+      )),
+  ],
       ),
       body: Center(
         child: _isLoading
             ? CircularProgressIndicator()
             : userList.isEmpty
                 ? Text('No users found.')
-                : ListView.builder(
+                : Scrollbar(child: 
+                ListView.builder(
                     itemCount: userList.length,
                     itemBuilder: (context, index) {
                       return ListTile(
@@ -84,108 +105,133 @@ class _CrudPageState extends State<CrudPage> {
                             Text('Age: ${userList[index].age}'),
                           ],
                         ),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Delete ${userList[index].name}?'),
-                                  content: Text('Are you sure you want to delete this user?'),
-                                  actions: <Widget>[
-                                    TextButton(
-                                      child: Text('Cancel'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: Text('Delete'),
-                                      onPressed: () {
-                                        deleteUser(index);
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.edit),
+                              onPressed: () {
+                                // Navigate to edit screen and pass user details
+                                navigateToEditUserPage(userList[index]);
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(Icons.delete),
+                              onPressed: () {
+                                // Show delete confirmation dialog
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Delete ${userList[index].name}?'),
+                                      content: Text('Are you sure you want to delete this user?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          child: Text('Cancel'),
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                        TextButton(
+                                          child: Text('Delete'),
+                                          onPressed: () {
+                                            deleteUser(index);
+                                            Navigator.of(context).pop();
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  },
                                 );
                               },
-                            );
-                          },
+                            ),
+                          ],
                         ),
                       );
                     },
                   ),
+                  )
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          navigateToCreateUserPage();
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   child: Icon(Icons.add),
+      //   onPressed: () {
+      //     navigateToCreateUserPage();
+      //   },
+      // ),
     );
   }
 }
 
-class CreateUserPage extends StatefulWidget {
+class EditUserPage extends StatefulWidget {
+  final Users user;
+
+  EditUserPage({required this.user});
+
   @override
-  _CreateUserPageState createState() => _CreateUserPageState();
+  _EditUserPageState createState() => _EditUserPageState();
 }
 
-class _CreateUserPageState extends State<CreateUserPage> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _ageController = TextEditingController();
-  void createUser() async {
-    String name = _nameController.text.trim();
-    String age = _ageController.text.trim();
+class _EditUserPageState extends State<EditUserPage> {
+  TextEditingController nameController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
 
-    // Add new user to Firestore
-    await FirebaseFirestore.instance.collection('user').add({
-      'name': name,
-      'age' : age,
-    });
-
-    // Clear text field
-    _nameController.clear();
-
-    // Navigate back to previous screen
-    Navigator.of(context).pop();
+  @override
+  void initState() {
+    super.initState();
+    nameController.text = widget.user.name;
+    ageController.text = widget.user.age;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create User'),
+        title: Text('Edit User'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             TextField(
-              controller: _nameController,
-              decoration: InputDecoration(
-                labelText: 'Name',
-              ),
+              controller: nameController,
+              decoration: InputDecoration(labelText: 'Name'),
             ),
-            SizedBox(height: 20),
+            SizedBox(height: 16.0),
             TextField(
-              controller: _ageController,
-              decoration: InputDecoration(
-                labelText: 'Age',
-              ),
+              controller: ageController,
+              decoration: InputDecoration(labelText: 'Age'),
             ),
+            SizedBox(height: 16.0),
             ElevatedButton(
-              onPressed: createUser,
-              child: Text('Create'),
+              onPressed: () {
+                // Update user details in Firestore
+                updateUserData();
+              },
+              child: Text('Save Changes'),
             ),
           ],
         ),
       ),
     );
   }
+
+  void updateUserData() async {
+    String newName = nameController.text;
+    String newAge = ageController.text;
+
+    // Update document in Firestore
+    await FirebaseFirestore.instance.collection('user').doc(widget.user.id).update({
+      'name': newName,
+      'age': newAge,
+    });
+
+    // Navigate back to previous screen
+    Navigator.pop(context);
+  }
 }
+
+
 
 class Users {
   final String id;
