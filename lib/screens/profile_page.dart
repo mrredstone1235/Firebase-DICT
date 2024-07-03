@@ -59,6 +59,12 @@ class _SecondPageState extends State<SecondPage> {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
+                    ClipOval(child:
+                    Image.network(
+                        user!.photoURL!,
+                        fit: BoxFit.fitHeight,
+                      ),),
+                    
                     SizedBox(height: 20),
                     Text(
                       user!.displayName ?? 'No Display Name',
